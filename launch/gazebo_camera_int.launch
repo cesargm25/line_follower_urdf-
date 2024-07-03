@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<launch>
+  <group>
+    <!-- image transport from compressed to raw -->
+    <node pkg="image_transport" type="republish" name="republish" args="compressed">
+      <remap from="in" to="/camera_scan" />
+      <remap from="out" to="/camera/image"/>
+      <param name="~image_transport" value="compressed"/>
+    </node>
+    <node pkg="topic_tools" type="relay" name="relay_camera_info" args="/camera_info"/>
+  </group>
+
+  <!-- image rectification -->
+  <node ns="camera" pkg="image_proc" type="image_proc" name="image_proc" args="_approximate_sync:=true" output="screen">
+    <remap from="image_raw" to="image" />
+    <param name="queue_size" value="20" />
+  </node>
+</launch>
+
+
